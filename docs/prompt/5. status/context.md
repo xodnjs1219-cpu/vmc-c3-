@@ -5,4 +5,4 @@ Context가 데이터를 불러오고 관리하는 흐름을 시각화하고,
 
 구체적인 구현 대신 인터페이스 및 상태 설계에 집중하라.
 
-완성된 결과를 /docs/state-management.md 파일로 생성하라
+완성된 결과를 /docs/pages/[pagename]/state-management.md 파일로 생성하라
