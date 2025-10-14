@@ -46,3 +46,27 @@ export const CONCERT_PLACEHOLDER_IMAGE_DIMENSIONS = {
   width: 800,
   height: 450,
 } as const;
+
+export const SEAT_GRADES = {
+  vip: 'vip',
+  r: 'r',
+  s: 's',
+  a: 'a',
+} as const;
+
+export const SEAT_GRADE_LABELS: Record<string, string> = {
+  [SEAT_GRADES.vip]: 'VIP',
+  [SEAT_GRADES.r]: 'R석',
+  [SEAT_GRADES.s]: 'S석',
+  [SEAT_GRADES.a]: 'A석',
+};
+
+export const SEAT_AVAILABILITY_POLLING_INTERVAL = 10_000;
+
+export const MIN_TICKET_COUNT = 1;
+
+export const DEFAULT_MAX_TICKETS_PER_BOOKING = 6;
+
+export const CONCERT_DETAIL_QUERY_KEY = 'concert-detail';
+
+export const CONCERT_SEAT_AVAILABILITY_QUERY_KEY = 'concert-seat-availability';

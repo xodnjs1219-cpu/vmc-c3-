@@ -15,8 +15,13 @@ import {
 } from '@/features/concerts/backend/error';
 import {
   getConcerts,
+  getConcertById,
+  getConcertSeatAvailability,
   parseConcertQueryParams,
 } from '@/features/concerts/backend/service';
+import { ConcertIdParamSchema } from '@/features/concerts/backend/schema';
+
+const INVALID_CONCERT_ID_CODE = 'INVALID_CONCERT_ID';
 
 export const registerConcertRoutes = (app: Hono<AppEnv>) => {
   app.get('/concerts', async (c) => {
@@ -50,6 +55,64 @@ export const registerConcertRoutes = (app: Hono<AppEnv>) => {
       }
 
       return respond(c, result);
+    }
+
+    return respond(c, result);
+  });
+
+  app.get('/concerts/:concertId', async (c) => {
+    const logger = getLogger(c);
+    const concertId = c.req.param('concertId');
+    const parsedParam = ConcertIdParamSchema.safeParse({ concertId });
+
+    if (!parsedParam.success) {
+      logger.warn('Invalid concertId received', parsedParam.error.flatten());
+      return respond(
+        c,
+        failure(
+          400,
+          INVALID_CONCERT_ID_CODE,
+          '유효하지 않은 콘서트 식별자입니다.',
+          parsedParam.error.format(),
+        ),
+      );
+    }
+
+    const supabase = getSupabase(c);
+    const result = await getConcertById(supabase, parsedParam.data.concertId);
+
+    if (!result.ok) {
+      const errorResult = result as ErrorResult<ConcertServiceError, unknown>;
+      logger.error('콘서트 상세 조회에 실패했습니다.', errorResult.error.message);
+    }
+
+    return respond(c, result);
+  });
+
+  app.get('/concerts/:concertId/seats/availability', async (c) => {
+    const logger = getLogger(c);
+    const concertId = c.req.param('concertId');
+    const parsedParam = ConcertIdParamSchema.safeParse({ concertId });
+
+    if (!parsedParam.success) {
+      logger.warn('Invalid concertId received for seat availability', parsedParam.error.flatten());
+      return respond(
+        c,
+        failure(
+          400,
+          INVALID_CONCERT_ID_CODE,
+          '유효하지 않은 콘서트 식별자입니다.',
+          parsedParam.error.format(),
+        ),
+      );
+    }
+
+    const supabase = getSupabase(c);
+    const result = await getConcertSeatAvailability(supabase, parsedParam.data.concertId);
+
+    if (!result.ok) {
+      const errorResult = result as ErrorResult<ConcertServiceError, unknown>;
+      logger.error('좌석 가용성 조회에 실패했습니다.', errorResult.error.message);
     }
 
     return respond(c, result);

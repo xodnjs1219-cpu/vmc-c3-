@@ -62,6 +62,45 @@ export const ConcertResponseSchema = z.object({
 
 export type ConcertResponse = z.infer<typeof ConcertResponseSchema>;
 
+export const ConcertIdParamSchema = z.object({
+  concertId: z.string().uuid(),
+});
+
+export type ConcertIdParam = z.infer<typeof ConcertIdParamSchema>;
+
+export const SeatGradeSchema = z.enum(['vip', 'r', 's', 'a']);
+
+export type SeatGrade = z.infer<typeof SeatGradeSchema>;
+
+export const ConcertDetailResponseSchema = z.object({
+  id: z.string().uuid(),
+  title: z.string(),
+  description: z.string().nullable(),
+  imageUrl: z.string().url(),
+  venue: z.string(),
+  startDate: z.string(),
+  endDate: z.string(),
+  status: z.string(),
+  maxTicketsPerBooking: z.number().int().positive(),
+});
+
+export type ConcertDetailResponse = z.infer<typeof ConcertDetailResponseSchema>;
+
+export const SeatAvailabilitySchema = z.object({
+  grade: SeatGradeSchema,
+  price: z.number().int().nonnegative(),
+  availableCount: z.number().int().nonnegative(),
+});
+
+export type SeatAvailability = z.infer<typeof SeatAvailabilitySchema>;
+
+export const SeatAvailabilityResponseSchema = z.object({
+  grades: z.array(SeatAvailabilitySchema),
+  totalAvailable: z.number().int().nonnegative(),
+});
+
+export type SeatAvailabilityResponse = z.infer<typeof SeatAvailabilityResponseSchema>;
+
 export const PaginationSchema = z.object({
   currentPage: z.number().int().nonnegative(),
   totalPages: z.number().int().nonnegative(),

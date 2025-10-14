@@ -1,7 +1,9 @@
+import { Hono } from 'hono';
 import { handle } from 'hono/vercel';
 import { createHonoApp } from '@/backend/hono/app';
 
-const app = createHonoApp();
+const baseApp = createHonoApp();
+const app = new Hono().route('/api', baseApp);
 
 export const GET = handle(app);
 export const POST = handle(app);

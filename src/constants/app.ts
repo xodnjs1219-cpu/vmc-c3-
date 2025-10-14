@@ -5,4 +5,5 @@ export const ROUTES = {
   home: '/',
   bookingLookup: '/lookup',
   concertDetail: (id: string) => `/concerts/${id}`,
+  seatSelection: (concertId: string, count: number) => `/booking/seats?concertId=${concertId}&count=${count}`,
 } as const;
