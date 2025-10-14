@@ -18,6 +18,8 @@ import {
   BookingVerifyRequestSchema,
   CancelBookingResponseSchema,
   CreateBookingRequestSchema,
+  BookingLookupRequestSchema,
+  BookingLookupResponseSchema,
   type BookingDetailResponse,
   type BookingDetailWithSeat,
   type BookingResponse,
@@ -25,14 +27,21 @@ import {
   type BookingVerifyResponse,
   type CancelBookingResponse,
   type CreateBookingRequest,
+  type BookingLookupRequest,
+  type BookingLookupResponse,
 } from '@/features/bookings/backend/schema';
 import { generateAccessToken, verifyAccessToken } from '@/features/bookings/backend/jwt';
 import { BOOKING_STATUS } from '@/features/bookings/constants';
 
 const BOOKING_FINALIZE_FUNCTION = 'finalize_booking';
 const CANCEL_BOOKING_FUNCTION = 'cancel_booking';
+const CANCEL_BOOKING_RPC_PARAMS = {
+  bookingId: 'p_booking_id',
+  cancellationWindowHours: 'p_cancellation_window_hours',
+} as const;
 const BOOKINGS_TABLE = 'bookings';
 const SEATS_TABLE = 'seats';
+const CONCERTS_TABLE = 'concerts';
 const PASSWORD_SALT_ROUNDS = 12;
 const VALIDATION_FAILURE_MESSAGE = '예매 요청 데이터 검증에 실패했습니다.';
 const HASHING_FAILURE_MESSAGE = '비밀번호 처리 중 오류가 발생했습니다.';
@@ -43,6 +52,11 @@ const BOOKING_DETAIL_FETCH_FAILURE_MESSAGE = '예약 상세 정보를 불러오�
 const BOOKING_NOT_FOUND_MESSAGE = '예약 정보를 찾을 수 없습니다.';
 const INVALID_ACCESS_TOKEN_MESSAGE = '유효하지 않은 접근 토큰입니다.';
 const CANCELLATION_FAILURE_MESSAGE = '예약 취소 처리 중 오류가 발생했습니다.';
+const LOOKUP_VALIDATION_FAILURE_MESSAGE = '입력값을 확인해주세요.';
+const LOOKUP_FETCH_FAILURE_MESSAGE = '예약 정보를 불러오는 중 오류가 발생했습니다.';
+const LOOKUP_CONCERT_FETCH_FAILURE_MESSAGE = '콘서트 정보를 불러오는 중 오류가 발생했습니다.';
+const LOOKUP_SEAT_FETCH_FAILURE_MESSAGE = '좌석 정보를 불러오는 중 오류가 발생했습니다.';
+const LOOKUP_RESPONSE_PARSE_FAILURE_MESSAGE = '예약 조회 응답 데이터 검증에 실패했습니다.';
 
 type BookingDetailRow = {
   id: string;
@@ -69,6 +83,27 @@ type BookingSeatRow = {
   seat_number: string;
   grade: string;
   price: number;
+  booking_id: string;
+};
+
+type BookingLookupRow = {
+  id: string;
+  concert_id: string;
+  booker_name: string;
+  phone_number: string;
+  password_hash: string;
+  total_amount: number;
+  status: (typeof BOOKING_STATUS)[keyof typeof BOOKING_STATUS];
+  created_at: string;
+  cancelled_at: string | null;
+};
+
+type ConcertLookupRow = {
+  id: string;
+  title: string;
+  venue: string;
+  start_date: string;
+  end_date: string;
 };
 
 const toFinalizeParams = (
@@ -181,6 +216,187 @@ const parseRpcDetails = (details: unknown) => {
 
 const handlePostgrestNotFound = () =>
   failure(404, bookingErrorCodes.notFound, BOOKING_NOT_FOUND_MESSAGE);
+
+const toSeatMap = (seats: BookingSeatRow[]) =>
+  seats.reduce<Map<string, BookingSeatRow[]>>((acc, seat) => {
+    const current = acc.get(seat.booking_id) ?? [];
+    return acc.set(seat.booking_id, [...current, seat]);
+  }, new Map());
+
+const toConcertMap = (concerts: ConcertLookupRow[]) =>
+  concerts.reduce<Map<string, ConcertLookupRow>>((acc, concert) => acc.set(concert.id, concert), new Map());
+
+export const lookupBookingsByCredentials = async (
+  supabase: SupabaseClient,
+  payload: BookingLookupRequest,
+): Promise<HandlerResult<BookingLookupResponse, BookingServiceError>> => {
+  const parsedPayload = BookingLookupRequestSchema.safeParse(payload);
+
+  if (!parsedPayload.success) {
+    return failure(
+      400,
+      bookingErrorCodes.validationError,
+      LOOKUP_VALIDATION_FAILURE_MESSAGE,
+      parsedPayload.error.format(),
+    );
+  }
+
+  const { phoneNumber, password } = parsedPayload.data;
+
+  const { data: bookingRows, error: bookingError } = await supabase
+    .from(BOOKINGS_TABLE)
+    .select(
+      `
+        id,
+        concert_id,
+        booker_name,
+        phone_number,
+        password_hash,
+        total_amount,
+        status,
+        created_at,
+        cancelled_at
+      `,
+    )
+    .eq('phone_number', phoneNumber)
+    .eq('status', BOOKING_STATUS.confirmed)
+    .order('created_at', { ascending: false });
+
+  if (bookingError) {
+    return failure(
+      500,
+      bookingErrorCodes.fetchError,
+      LOOKUP_FETCH_FAILURE_MESSAGE,
+      bookingError.message ?? bookingError,
+    );
+  }
+
+  const bookingRowsTyped = (bookingRows as unknown as BookingLookupRow[] | null) ?? [];
+
+  if (bookingRowsTyped.length === 0) {
+    const emptyResult = BookingLookupResponseSchema.safeParse({ bookings: [] });
+
+    if (!emptyResult.success) {
+      return failure(
+        500,
+        bookingErrorCodes.validationError,
+        LOOKUP_RESPONSE_PARSE_FAILURE_MESSAGE,
+        emptyResult.error.format(),
+      );
+    }
+
+    return success(emptyResult.data);
+  }
+
+  const matchedRows = await Promise.all(
+    bookingRowsTyped.map(async (row) => {
+      const isMatch = await bcrypt.compare(password, row.password_hash);
+      return isMatch ? row : null;
+    }),
+  );
+
+  const filteredRows = matchedRows.filter((row): row is BookingLookupRow => row !== null);
+
+  if (filteredRows.length === 0) {
+    const emptyResult = BookingLookupResponseSchema.safeParse({ bookings: [] });
+
+    if (!emptyResult.success) {
+      return failure(
+        500,
+        bookingErrorCodes.validationError,
+        LOOKUP_RESPONSE_PARSE_FAILURE_MESSAGE,
+        emptyResult.error.format(),
+      );
+    }
+
+    return success(emptyResult.data);
+  }
+
+  const bookingIds = filteredRows.map((row) => row.id);
+  const concertIds = Array.from(new Set(filteredRows.map((row) => row.concert_id)));
+
+  const { data: seatRows, error: seatError } = await supabase
+    .from(SEATS_TABLE)
+    .select('id, section, row_number, seat_number, grade, price, booking_id')
+    .in('booking_id', bookingIds);
+
+  if (seatError) {
+    return failure(
+      500,
+      bookingErrorCodes.fetchError,
+      LOOKUP_SEAT_FETCH_FAILURE_MESSAGE,
+      seatError.message ?? seatError,
+    );
+  }
+
+  const { data: concertRows, error: concertError } = await supabase
+    .from(CONCERTS_TABLE)
+    .select('id, title, venue, start_date, end_date')
+    .in('id', concertIds);
+
+  if (concertError) {
+    return failure(
+      500,
+      bookingErrorCodes.fetchError,
+      LOOKUP_CONCERT_FETCH_FAILURE_MESSAGE,
+      concertError.message ?? concertError,
+    );
+  }
+
+  const seatRowsTyped = (seatRows as unknown as BookingSeatRow[] | null) ?? [];
+  const concertRowsTyped = (concertRows as unknown as ConcertLookupRow[] | null) ?? [];
+
+  const seatMap = toSeatMap(seatRowsTyped);
+  const concertMap = toConcertMap(concertRowsTyped);
+
+  const assembledBookings = filteredRows.reduce<BookingDetailWithSeat[]>((acc, row) => {
+    const concert = concertMap.get(row.concert_id);
+
+    if (!concert) {
+      return acc;
+    }
+
+    const seatsForBooking = seatMap.get(row.id) ?? [];
+
+    acc.push({
+      id: row.id,
+      concertId: row.concert_id,
+      concertTitle: concert.title,
+      concertVenue: concert.venue,
+      concertStartDate: concert.start_date,
+      concertEndDate: concert.end_date,
+      bookerName: row.booker_name,
+      phoneNumber: row.phone_number,
+      totalAmount: row.total_amount,
+      status: row.status,
+      seats: seatsForBooking.map((seat) => ({
+        id: seat.id,
+        section: seat.section,
+        rowNumber: seat.row_number,
+        seatNumber: seat.seat_number,
+        grade: seat.grade,
+        price: seat.price,
+      })),
+      createdAt: row.created_at,
+      cancelledAt: row.cancelled_at,
+    });
+
+    return acc;
+  }, []);
+
+  const parsedResult = BookingLookupResponseSchema.safeParse({ bookings: assembledBookings });
+
+  if (!parsedResult.success) {
+    return failure(
+      500,
+      bookingErrorCodes.validationError,
+      LOOKUP_RESPONSE_PARSE_FAILURE_MESSAGE,
+      parsedResult.error.format(),
+    );
+  }
+
+  return success(parsedResult.data);
+};
 
 export const createBooking = async (
   supabase: SupabaseClient,
@@ -363,7 +579,7 @@ export const getBookingDetailById = async (
 
   const { data: seats, error: seatError } = await supabase
     .from(SEATS_TABLE)
-    .select('id, section, row_number, seat_number, grade, price')
+    .select('id, section, row_number, seat_number, grade, price, booking_id')
     .eq('booking_id', bookingId);
 
   if (seatError) {
@@ -450,8 +666,9 @@ export const cancelBooking = async (
   }
 
   const { data, error } = await supabase.rpc(CANCEL_BOOKING_FUNCTION, {
-    booking_id: bookingId,
-    cancellation_window_hours: config.booking.cancellationWindowHours,
+    [CANCEL_BOOKING_RPC_PARAMS.bookingId]: bookingId,
+    [CANCEL_BOOKING_RPC_PARAMS.cancellationWindowHours]:
+      config.booking.cancellationWindowHours,
   });
 
   if (error) {

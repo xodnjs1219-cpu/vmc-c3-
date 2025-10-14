@@ -94,6 +94,15 @@ export const CancelBookingResponseSchema = z.object({
   message: z.string(),
 });
 
+export const BookingLookupRequestSchema = z.object({
+  phoneNumber: z.string().regex(BOOKING_PHONE_NUMBER_REGEX, PHONE_NUMBER_ERROR),
+  password: z.string().regex(BOOKING_PASSWORD_REGEX, PASSWORD_LENGTH_ERROR),
+});
+
+export const BookingLookupResponseSchema = z.object({
+  bookings: z.array(BookingDetailWithSeatSchema),
+});
+
 export const BookingAccessTokenSchema = z.object({
   storageKey: z
     .string()
@@ -114,3 +123,5 @@ export type BookingVerifyResponse = z.infer<typeof BookingVerifyResponseSchema>;
 export type BookingDetailWithSeat = z.infer<typeof BookingDetailWithSeatSchema>;
 export type BookingDetailResponse = z.infer<typeof BookingDetailResponseSchema>;
 export type CancelBookingResponse = z.infer<typeof CancelBookingResponseSchema>;
+export type BookingLookupRequest = z.infer<typeof BookingLookupRequestSchema>;
+export type BookingLookupResponse = z.infer<typeof BookingLookupResponseSchema>;

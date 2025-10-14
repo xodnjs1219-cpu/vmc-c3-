@@ -14,4 +14,8 @@ export {
   type BookingDetailWithSeat,
   type BookingDetailResponse,
   type CancelBookingResponse,
+  BookingLookupRequestSchema,
+  BookingLookupResponseSchema,
+  type BookingLookupRequest,
+  type BookingLookupResponse,
 } from '@/features/bookings/backend/schema';

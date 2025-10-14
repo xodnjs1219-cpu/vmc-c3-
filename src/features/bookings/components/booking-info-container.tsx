@@ -43,7 +43,7 @@ export function BookingInfoContainer({ bookingId }: BookingInfoContainerProps) {
   const [selectedBooking, setSelectedBooking] = useState<BookingDetail | null>(null);
   const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
 
-  const verifyMutation = useBookingVerifyMutation(bookingId);
+  const verifyMutation = useBookingVerifyMutation();
   const detailQuery = useBookingDetailQuery(bookingId, accessToken);
   const cancelMutation = useCancelBookingMutation();
 
@@ -78,6 +78,7 @@ export function BookingInfoContainer({ bookingId }: BookingInfoContainerProps) {
     async (formData: BookingLookupFormData) => {
       try {
         const result = await verifyMutation.mutateAsync({
+          bookingId,
           phoneNumber: formData.phoneNumber,
           password: formData.password,
         });

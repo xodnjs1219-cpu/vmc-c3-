@@ -13,4 +13,6 @@ export const bookingLookupSchema = z.object({
   password: z.string().regex(BOOKING_PASSWORD_REGEX, PASSWORD_ERROR),
 });
 
+export const bookingLookupFormSchema = bookingLookupSchema;
+
 export type BookingLookupFormData = z.infer<typeof bookingLookupSchema>;

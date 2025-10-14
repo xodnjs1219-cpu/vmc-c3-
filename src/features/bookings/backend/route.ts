@@ -18,10 +18,12 @@ import {
   cancelBooking,
   createBooking,
   getBookingDetailById,
+  lookupBookingsByCredentials,
   verifyBookingAccess,
 } from '@/features/bookings/backend/service';
 import {
   BookingDetailParamSchema,
+  BookingLookupRequestSchema,
   BookingVerifyRequestSchema,
   CreateBookingRequestSchema,
 } from '@/features/bookings/backend/schema';
@@ -30,6 +32,7 @@ const INVALID_JSON_MESSAGE = '요청 본문을 읽을 수 없습니다.';
 const INVALID_AUTH_HEADER_MESSAGE = 'Authorization 헤더가 필요합니다.';
 const INVALID_AUTH_FORMAT_MESSAGE = 'Authorization 헤더 형식이 올바르지 않습니다.';
 const AUTH_SCHEME = 'Bearer ';
+const LOOKUP_VALIDATION_MESSAGE = '입력값을 확인해주세요.';
 
 export const registerBookingRoutes = (app: Hono<AppEnv>) => {
   app.post('/bookings', async (c) => {
@@ -71,6 +74,48 @@ export const registerBookingRoutes = (app: Hono<AppEnv>) => {
     }
 
     logger.info('예매 생성 성공', { bookingId: result.data.id });
+    return respond(c, result);
+  });
+
+  app.post('/bookings/lookup', async (c) => {
+    const logger = getLogger(c);
+    const supabase = getSupabase(c);
+    let body: unknown;
+
+    try {
+      body = await c.req.json();
+    } catch (jsonError) {
+      logger.warn('예약 조회 요청 본문 파싱에 실패했습니다.', jsonError);
+      return respond(
+        c,
+        failure(400, bookingErrorCodes.validationError, INVALID_JSON_MESSAGE),
+      );
+    }
+
+    const parsed = BookingLookupRequestSchema.safeParse(body);
+
+    if (!parsed.success) {
+      logger.warn('예약 조회 요청 검증 실패', parsed.error.flatten());
+      return respond(
+        c,
+        failure(
+          400,
+          bookingErrorCodes.validationError,
+          LOOKUP_VALIDATION_MESSAGE,
+          parsed.error.format(),
+        ),
+      );
+    }
+
+    const result = await lookupBookingsByCredentials(supabase, parsed.data);
+
+    if (!result.ok) {
+      const errorResult = result as ErrorResult<BookingServiceError, unknown>;
+      logger.warn('예약 조회 실패', errorResult.error);
+      return respond(c, errorResult);
+    }
+
+    logger.info('예약 조회 성공', { bookingCount: result.data.bookings.length });
     return respond(c, result);
   });
 
