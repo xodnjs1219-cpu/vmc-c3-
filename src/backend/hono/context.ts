@@ -8,6 +8,13 @@ export type AppConfig = {
     url: string;
     serviceRoleKey: string;
   };
+  auth: {
+    jwtSecret: string;
+    bookingAccessTokenExpiresInMinutes: number;
+  };
+  booking: {
+    cancellationWindowHours: number;
+  };
 };
 
 export type AppVariables = {

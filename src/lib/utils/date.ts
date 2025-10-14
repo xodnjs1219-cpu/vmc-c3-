@@ -1,7 +1,9 @@
 import { format, isValid, parseISO, startOfDay } from 'date-fns';
+import { ko } from 'date-fns/locale';
 
 const DISPLAY_DATE_FORMAT = 'yyyy.MM.dd';
 const INPUT_DATE_FORMAT = 'yyyy-MM-dd';
+const DATE_TIME_DISPLAY_FORMAT = 'yyyy년 M월 d일 (E) HH:mm';
 
 export const formatShortDate = (isoDate: string) => {
   const parsed = parseISO(isoDate);
@@ -53,4 +55,14 @@ export const toIsoFromDateInput = (value: string | undefined) => {
   }
 
   return date.toISOString();
+};
+
+export const formatDateTime = (value: string, pattern: string = DATE_TIME_DISPLAY_FORMAT) => {
+  const parsed = parseISO(value);
+
+  if (!isValid(parsed)) {
+    return '';
+  }
+
+  return format(parsed, pattern, { locale: ko });
 };

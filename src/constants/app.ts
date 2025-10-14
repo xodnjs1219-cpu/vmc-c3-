@@ -9,4 +9,5 @@ export const ROUTES = {
     `/booking/seats?concertId=${concertId}&numberOfTickets=${count}`,
   checkout: (concertId: string, sessionId: string) =>
     `/booking/checkout?concertId=${concertId}&sessionId=${sessionId}`,
+  bookingInfo: (id: string) => `/booking/${id}`,
 } as const;
