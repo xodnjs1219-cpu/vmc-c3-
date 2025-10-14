@@ -1,5 +1,5 @@
--- Migration: finalize booking transaction function
--- Description: Adds finalize_booking function to confirm seat reservations atomically.
+-- Migration: refine finalize_booking locking
+-- Description: Removes aggregate locks to avoid FOR UPDATE restrictions and validates processed seats via loop
 
 create or replace function public.finalize_booking(
   p_concert_id uuid,
@@ -16,11 +16,11 @@ declare
   v_concert public.concerts%rowtype;
   v_booking public.bookings%rowtype;
   v_seat public.seats%rowtype;
-  v_seats public.seats%rowtype[];
   v_total_amount integer := 0;
   v_seat_payload jsonb := '[]'::jsonb;
   v_timeout_interval interval := interval '10 minutes';
   v_expected_count integer;
+  v_processed_count integer := 0;
 begin
   v_expected_count := coalesce(array_length(p_seat_ids, 1), 0);
 
@@ -38,17 +38,14 @@ begin
     raise exception using message = 'CONCERT_NOT_FOUND';
   end if;
 
-  select array_agg(s)
-  into v_seats
-  from public.seats s
-  where s.id = any(p_seat_ids)
-  for update;
+  for v_seat in
+    select *
+    from public.seats
+    where id = any(p_seat_ids)
+    for update
+  loop
+    v_processed_count := v_processed_count + 1;
 
-  if v_seats is null or array_length(v_seats, 1) <> v_expected_count then
-    raise exception using message = 'SEAT_UNAVAILABLE';
-  end if;
-
-  foreach v_seat in array v_seats loop
     if v_seat.concert_id <> p_concert_id then
       raise exception using message = 'SEAT_UNAVAILABLE', detail = 'Seat does not belong to the requested concert.';
     end if;
@@ -78,6 +75,10 @@ begin
       )
     );
   end loop;
+
+  if v_processed_count <> v_expected_count then
+    raise exception using message = 'SEAT_UNAVAILABLE', detail = 'Some seats were not locked.';
+  end if;
 
   insert into public.bookings (
     concert_id,
@@ -130,4 +131,4 @@ comment on function public.finalize_booking(
   text,
   text,
   text
-) is 'Confirms reserved seats by creating a booking and marking seats as booked with transactional safety.';
+) is 'Confirms reserved seats by creating a booking and marking seats as booked with transactional safety. Updated to avoid aggregate locks and count seats via looping.';
