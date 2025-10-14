@@ -102,41 +102,21 @@
 
 #### 2.2.4 Booking Info Section
 - **위치**: `src/features/bookings/components/booking-info-section.tsx`
-- **설명**: 예약 정보의 전체 섹션 (콘서트 정보 + 좌석 정보 + 예매자 정보)
-- **Props**: `booking` (전체 예약 상세 정보)
-- **하위 컴포넌트**:
-  - `BookingHeader`: 예약 번호 및 상태 표시
-  - `ConcertInfoCard`: 콘서트 기본 정보
-  - `SeatInfoCard`: 좌석 정보 목록
-  - `BookerInfoCard`: 예매자 정보
-  - `PaymentInfoCard`: 결제 정보
+- **설명**: 예약 정보의 전체 섹션 (통합된 단일 컴포넌트)
+- **Props**: `booking` (전체 예약 상세 정보), `canCancel`, `onCancelClick`
+- **책임**:
+  - 예약 번호 및 상태 표시
+  - 콘서트 정보 (제목, 날짜, 장소)
+  - 좌석 정보 목록 (등급, 구역, 좌석 번호, 가격)
+  - 예매자 정보 (이름, 연락처, 예매일)
+  - 결제 정보 (총 금액, 매수)
+  - 액션 버튼들 (QR, 프린트, 취소)
+- **구현 원칙**: 
+  - 단순 표시 목적이므로 과도한 분리 없이 하나의 컴포넌트로 통합
+  - 내부적으로 섹션별 렌더링 함수나 작은 서브컴포넌트 활용 가능
+  - 재사용이 필요한 경우에만 별도 컴포넌트로 분리 고려
 
-#### 2.2.5 Booking Header
-- **위치**: `src/features/bookings/components/booking-header.tsx`
-- **설명**: 예약 번호 및 예약 상태 표시 헤더
-- **Props**: `bookingId`, `status`, `cancelledAt`
-
-#### 2.2.6 Concert Info Card
-- **위치**: `src/features/bookings/components/concert-info-card.tsx`
-- **설명**: 콘서트 기본 정보 카드 (제목, 날짜, 장소)
-- **Props**: `concert` (title, startDate, endDate, venue)
-
-#### 2.2.7 Seat Info Card
-- **위치**: `src/features/bookings/components/seat-info-card.tsx`
-- **설명**: 좌석 정보 카드 (등급, 구역, 좌석 번호, 가격)
-- **Props**: `seats[]` (배열)
-
-#### 2.2.8 Booker Info Card
-- **위치**: `src/features/bookings/components/booker-info-card.tsx`
-- **설명**: 예매자 정보 카드 (이름, 연락처, 예매일)
-- **Props**: `bookerName`, `phoneNumber`, `createdAt`
-
-#### 2.2.9 Payment Info Card
-- **위치**: `src/features/bookings/components/payment-info-card.tsx`
-- **설명**: 결제 정보 카드 (총 금액, 매수)
-- **Props**: `totalAmount`, `seatCount`
-
-#### 2.2.10 Booking Actions
+#### 2.2.5 Booking Actions
 - **위치**: `src/features/bookings/components/booking-actions.tsx`
 - **설명**: 예약 관련 액션 버튼 모음 (취소, QR 코드, 출력)
 - **Props**: `bookingId`, `booking`, `onCancelClick`, `canCancel`
@@ -147,24 +127,24 @@
 - **Props**: `bookingId`
 - **라이브러리**: `qrcode.react` 사용
 
-#### 2.2.12 Cancel Confirmation Modal
-- **위치**: 기존 `src/features/bookings/components/cancel-confirmation-modal.tsx` 재사용
+#### 2.2.7 Cancel Confirmation Modal
+- **위치**: 기존 `src/features/bookings/components/cancel-confirmation-modal.tsx` 재사용 또는 신규 작성
 - **설명**: 예약 취소 확인 모달
+- **Props**: `isOpen`, `booking`, `onConfirm`, `onClose`, `isLoading`, `error`
 
-#### 2.2.13 Print Layout
-- **위치**: `src/features/bookings/components/print-layout.tsx`
-- **설명**: 프린트 전용 레이아웃 (CSS @media print 사용)
-- **Props**: `booking`
+#### 2.2.8 Print Layout
+- **위치**: BookingInfoSection 내부에 CSS @media print로 처리 (별도 컴포넌트 불필요)
+- **설명**: 프린트 시 불필요한 요소(헤더, 버튼 등) 숨김 처리
 
-#### 2.2.14 Error State
+#### 2.2.9 Error State
 - **위치**: 기존 `src/features/concerts/components/concert-error-state.tsx` 재사용
 - **설명**: 에러 발생 시 표시되는 컴포넌트
 
-#### 2.2.15 Loading Skeleton
+#### 2.2.10 Loading Skeleton
 - **위치**: `src/features/bookings/components/booking-info-skeleton.tsx`
 - **설명**: 로딩 중 표시되는 스켈레톤 UI
 
-#### 2.2.16 Header Component
+#### 2.2.11 Header Component
 - **위치**: 기존 `src/components/layout/header.tsx` 재사용 (PrimaryHeader)
 - **설명**: 페이지 상단 헤더
 
@@ -184,9 +164,11 @@
 - **특징**: accessToken이 있을 때만 활성화
 
 #### 2.3.3 useCancelBookingMutation
-- **위치**: 기존 `src/features/bookings/hooks/useCancelBookingMutation.ts` 확장
-- **설명**: 예약 취소 Mutation 훅 (accessToken 검증 추가)
+- **위치**: `src/features/bookings/hooks/useCancelBookingMutation.ts` (신규 작성)
+- **설명**: 예약 취소 Mutation 훅 (accessToken 검증 포함)
+- **Parameters**: `{ bookingId: string, accessToken: string }`
 - **Returns**: `{ mutate, mutateAsync, isLoading, isError, error }`
+- **주의**: 기존 코드베이스에 존재하지 않으므로 새로 작성 필요
 
 ### 2.4 공통 유틸리티 및 타입
 
@@ -206,26 +188,30 @@
   - `ACCESS_TOKEN_STORAGE_KEY`: 'booking_access_token'
   - `BOOKING_STATUS_LABELS`: { confirmed: '예매 확정', cancelled: '예매 취소' }
 
-#### 2.4.3 Access Token Utils
-- **위치**: `src/features/bookings/lib/access-token.ts`
-- **설명**: 접근 토큰 관리 유틸리티
+#### 2.4.3 Access Token Utils (Shared Module로 이동 고려)
+- **위치**: `src/lib/auth/token-storage.ts` (공통 모듈로 이동 권장)
+- **설명**: 접근 토큰 관리 유틸리티 (범용적으로 사용 가능)
 - **Functions**:
-  - `saveAccessToken()`: sessionStorage에 토큰 저장
-  - `getAccessToken()`: sessionStorage에서 토큰 조회
-  - `clearAccessToken()`: sessionStorage에서 토큰 삭제
+  - `saveToken()`: sessionStorage에 토큰 저장
+  - `getToken()`: sessionStorage에서 토큰 조회
+  - `clearToken()`: sessionStorage에서 토큰 삭제
+- **재사용성**: 다른 feature에서도 토큰 관리가 필요할 경우 활용 가능
 
-#### 2.4.4 QR Code Utils
-- **위치**: `src/features/bookings/lib/qr-code.ts`
-- **설명**: QR 코드 생성 유틸리티
+#### 2.4.4 QR Code Utils (Shared Module로 이동 고려)
+- **위치**: `src/lib/utils/qr-code.ts` (공통 모듈로 이동 권장)
+- **설명**: QR 코드 생성 유틸리티 (범용적으로 사용 가능)
 - **Functions**:
-  - `generateQRCodeData()`: 예약 ID를 기반으로 QR 코드 데이터 생성
-  - `downloadQRCode()`: QR 코드 이미지 다운로드
+  - `generateQRCodeData()`: 데이터를 QR 코드 형식으로 변환
+  - `downloadQRCodeAsImage()`: QR 코드 이미지 다운로드
+- **재사용성**: 티켓, 쿠폰, 기타 식별자에도 활용 가능
 
-#### 2.4.5 Print Utils
-- **위치**: `src/features/bookings/lib/print.ts`
-- **설명**: 프린트 관련 유틸리티
+#### 2.4.5 Print Utils (Shared Module로 이동 고려)
+- **위치**: `src/lib/utils/print.ts` (공통 모듈로 이동 권장)
+- **설명**: 프린트 관련 유틸리티 (범용적으로 사용 가능)
 - **Functions**:
-  - `handlePrint()`: window.print() 호출 및 프린트 스타일 적용
+  - `handlePrint()`: window.print() 호출
+  - `setupPrintStyles()`: 프린트 전용 스타일 동적 적용 (옵션)
+- **재사용성**: 영수증, 티켓, 리포트 등 다양한 프린트 시나리오에 활용 가능
 
 #### 2.4.6 Cancellation Policy Utils (기존 재사용)
 - **위치**: `src/features/bookings/lib/policy.ts`
@@ -403,7 +389,12 @@ graph LR
 
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET ?? 'fallback-secret-for-development-only';
+// 보안 강화: 프로덕션 환경에서 JWT_SECRET 필수 검증
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required');
+}
+
 const JWT_EXPIRES_IN = '1h'; // 1시간
 
 type AccessTokenPayload = {
@@ -726,7 +717,15 @@ export const bookingErrorCodes = {
   cancelError: 'BOOKING_CANCEL_ERROR',
   accessDenied: 'BOOKING_ACCESS_DENIED', // 신규
   detailFetchError: 'BOOKING_DETAIL_FETCH_ERROR', // 신규
-  invalidAccessToken: 'INVALID_ACCESS_TOKEN', // 신규
+  invalidAccessToken: 'BOOKING_INVALID_ACCESS_TOKEN', // 신규 - 일관성을 위해 BOOKING_ 접두사 추가
+  validationError: 'BOOKING_VALIDATION_ERROR', // 기존
+  seatUnavailable: 'BOOKING_SEAT_UNAVAILABLE', // 기존
+  sessionExpired: 'BOOKING_SESSION_EXPIRED', // 기존
+  sessionMismatch: 'BOOKING_SESSION_MISMATCH', // 기존
+  concertNotFound: 'BOOKING_CONCERT_NOT_FOUND', // 기존
+  transactionFailed: 'BOOKING_TRANSACTION_FAILED', // 기존
+  hashingFailed: 'BOOKING_PASSWORD_HASHING_FAILED', // 기존
+  databaseError: 'BOOKING_DATABASE_ERROR', // 기존
 } as const;
 
 export type BookingServiceError =
@@ -1463,8 +1462,8 @@ export default async function BookingInfoPage(props: PageProps) {
 ### 6.1 QR Code 라이브러리
 
 ```bash
-npm install qrcode.react
-npm install --save-dev @types/qrcode.react
+# react-qr-code 사용 (더 최신이고 유지보수가 활발함)
+npm install react-qr-code
 ```
 
 ### 6.2 JWT 라이브러리
@@ -1479,8 +1478,31 @@ npm install --save-dev @types/jsonwebtoken
 ```env
 # .env.local
 
-# JWT Secret Key (프로덕션에서는 강력한 시크릿 키 사용)
-JWT_SECRET=your-secure-jwt-secret-key-here
+# JWT Secret Key (필수 - 서버 시작 시 검증됨)
+# 프로덕션에서는 강력한 시크릿 키 사용 (최소 32자 이상 권장)
+# 생성 예시: openssl rand -base64 32
+JWT_SECRET=your-secure-jwt-secret-key-at-least-32-chars-long-here
+```
+
+### 7.1 환경 변수 검증
+
+```typescript
+// src/backend/config/index.ts (기존 파일 확장)
+
+// 필수 환경 변수 검증
+const requiredEnvVars = ['JWT_SECRET'] as const;
+
+requiredEnvVars.forEach((varName) => {
+  if (!process.env[varName]) {
+    throw new Error(`Missing required environment variable: ${varName}`);
+  }
+});
+
+// JWT_SECRET 최소 길이 검증 (보안 강화)
+const MIN_JWT_SECRET_LENGTH = 32;
+if (process.env.JWT_SECRET && process.env.JWT_SECRET.length < MIN_JWT_SECRET_LENGTH) {
+  console.warn(`Warning: JWT_SECRET should be at least ${MIN_JWT_SECRET_LENGTH} characters long for security.`);
+}
 ```
 
 ## 8. ROUTES 상수 확장
@@ -1559,9 +1581,133 @@ staleTime: 60000
 - 모든 버튼은 Tab 키로 접근 가능
 - Enter 키로 액션 실행
 
-## 13. QA 체크리스트
+## 13. Unit Test 계획
 
-### 13.1 기능 테스트
+### 13.1 Backend Service Tests
+
+#### verifyBookingAccess()
+- [ ] **성공 케이스**: 올바른 휴대폰 번호와 비밀번호로 인증 시 accessToken 반환
+- [ ] **실패 케이스**: 존재하지 않는 bookingId로 인증 시 404 반환
+- [ ] **실패 케이스**: 휴대폰 번호 불일치 시 403 반환
+- [ ] **실패 케이스**: 비밀번호 불일치 시 403 반환
+- [ ] **Edge Case**: 데이터베이스 오류 시 500 반환
+
+#### getBookingDetailById()
+- [ ] **성공 케이스**: 유효한 토큰으로 조회 시 예약 상세 정보 반환
+- [ ] **성공 케이스**: 콘서트 정보와 좌석 정보가 모두 포함되어 반환
+- [ ] **실패 케이스**: 유효하지 않은 토큰으로 조회 시 401 반환
+- [ ] **실패 케이스**: 토큰의 bookingId와 요청 bookingId 불일치 시 401 반환
+- [ ] **실패 케이스**: 존재하지 않는 예약 조회 시 404 반환
+- [ ] **Edge Case**: 좌석 정보 조회 실패 시 500 반환
+
+#### generateAccessToken() & verifyAccessToken()
+- [ ] **성공 케이스**: 생성된 토큰을 검증 시 올바른 payload 반환
+- [ ] **실패 케이스**: 만료된 토큰 검증 시 null 반환
+- [ ] **실패 케이스**: 잘못된 형식의 토큰 검증 시 null 반환
+- [ ] **Edge Case**: JWT_SECRET 미설정 시 서버 시작 실패
+
+### 13.2 React Query Hooks Tests
+
+#### useBookingVerifyMutation
+- [ ] **성공 케이스**: 유효한 인증 정보로 mutate 시 accessToken 반환
+- [ ] **실패 케이스**: 유효하지 않은 인증 정보로 mutate 시 에러 반환
+- [ ] **로딩 상태**: isLoading이 요청 중에 true로 변경
+- [ ] **에러 핸들링**: API 에러 메시지가 error 객체에 포함됨
+
+#### useBookingDetailQuery
+- [ ] **성공 케이스**: accessToken 존재 시 예약 상세 조회 성공
+- [ ] **조건부 활성화**: accessToken이 null일 때 fetch 실행 안 됨
+- [ ] **실패 케이스**: 401 에러 시 error 상태로 변경
+- [ ] **캐싱**: 동일한 bookingId 재조회 시 캐시된 데이터 반환
+- [ ] **Refetch**: refetch 호출 시 최신 데이터 재조회
+
+#### useCancelBookingMutation
+- [ ] **성공 케이스**: 유효한 accessToken과 bookingId로 취소 성공
+- [ ] **실패 케이스**: 취소 불가 기간일 경우 에러 반환
+- [ ] **실패 케이스**: 이미 취소된 예약일 경우 에러 반환
+- [ ] **에러 핸들링**: 네트워크 오류 시 적절한 에러 메시지 반환
+
+### 13.3 Component Tests
+
+#### BookingAuthForm
+- [ ] **유효성 검증**: 휴대폰 번호 형식이 잘못되면 에러 메시지 표시
+- [ ] **유효성 검증**: 비밀번호가 4자리가 아니면 에러 메시지 표시
+- [ ] **버튼 상태**: 유효하지 않은 입력일 때 제출 버튼 비활성화
+- [ ] **버튼 상태**: 로딩 중일 때 제출 버튼 비활성화
+- [ ] **제출**: 유효한 입력으로 제출 시 onSubmit 콜백 호출
+
+#### BookingInfoContainer
+- [ ] **인증 상태 분기**: 토큰 없을 때 BookingAuthForm 렌더링
+- [ ] **인증 상태 분기**: 토큰 있을 때 예약 상세 정보 렌더링
+- [ ] **로딩 상태**: 데이터 로딩 중 BookingInfoSkeleton 렌더링
+- [ ] **에러 상태**: 401 에러 시 토큰 삭제 후 인증 폼으로 전환
+- [ ] **에러 상태**: 기타 에러 시 ConcertErrorState 렌더링
+- [ ] **세션 관리**: 페이지 로드 시 sessionStorage에서 토큰 복구
+- [ ] **취소 기능**: 취소 버튼 클릭 시 모달 표시
+
+#### BookingInfoSection
+- [ ] **렌더링**: 모든 예약 정보가 올바르게 표시됨
+- [ ] **조건부 렌더링**: 취소 가능 시 취소 버튼 표시
+- [ ] **조건부 렌더링**: 취소 불가 시 취소 버튼 숨김
+- [ ] **QR 코드**: QR 코드 토글 버튼 클릭 시 QR 코드 표시/숨김
+
+## 14. Presentation Layer QA Sheet
+
+### 14.1 Accessibility (접근성)
+- [ ] **키보드 접근**: 모든 인터랙티브 요소가 Tab 키로 접근 가능한가?
+- [ ] **키보드 접근**: Enter 키로 버튼 실행이 가능한가?
+- [ ] **포커스 관리**: 포커스 인디케이터가 명확하게 표시되는가?
+- [ ] **ARIA 레이블**: 모든 폼 요소에 적절한 레이블이 있는가?
+- [ ] **ARIA 역할**: 의미론적 HTML과 ARIA 역할이 올바르게 사용되었는가?
+- [ ] **색상 대비**: 텍스트와 배경의 색상 대비가 WCAG AA 기준(4.5:1) 이상인가?
+- [ ] **스크린 리더**: 스크린 리더로 모든 정보를 이해할 수 있는가?
+- [ ] **에러 메시지**: 에러 발생 시 스크린 리더에 알림이 전달되는가?
+
+### 14.2 Responsive Design (반응형 디자인)
+- [ ] **모바일 (< 640px)**: 레이아웃이 세로로 잘 배치되는가?
+- [ ] **모바일**: 버튼과 터치 타겟이 최소 44x44px 이상인가?
+- [ ] **모바일**: 텍스트 크기가 읽기 편한가?
+- [ ] **태블릿 (640px ~ 1024px)**: 그리드 레이아웃이 적절히 조정되는가?
+- [ ] **데스크톱 (> 1024px)**: 최대 너비 제한이 있어 과도하게 넓어지지 않는가?
+- [ ] **프린트 레이아웃**: 프린트 시 불필요한 요소(헤더, 버튼)가 숨겨지는가?
+- [ ] **프린트 레이아웃**: 프린트 시 QR 코드가 선명하게 출력되는가?
+
+### 14.3 Loading & Error States (로딩 및 에러 상태)
+- [ ] **로딩 스켈레톤**: 실제 콘텐츠와 유사한 모양인가?
+- [ ] **로딩 스켈레톤**: 애니메이션이 부드럽게 표시되는가?
+- [ ] **에러 메시지**: 에러 메시지가 명확하고 이해하기 쉬운가?
+- [ ] **에러 메시지**: 사용자가 문제를 해결할 수 있는 안내가 포함되어 있는가?
+- [ ] **재시도 버튼**: 재시도 버튼이 적절히 작동하는가?
+- [ ] **빈 상태**: 예약을 찾을 수 없을 때 적절한 메시지가 표시되는가?
+
+### 14.4 UX Interactions (사용자 경험 상호작용)
+- [ ] **폼 검증**: 입력 필드에 실시간 유효성 검증이 표시되는가?
+- [ ] **폼 검증**: 에러 메시지가 입력 필드 하단에 명확히 표시되는가?
+- [ ] **버튼 상태**: 로딩 중일 때 버튼이 비활성화되고 로딩 인디케이터가 표시되는가?
+- [ ] **버튼 상태**: 비활성화된 버튼의 이유가 시각적으로 명확한가?
+- [ ] **모달**: 모달 열림/닫힘 애니메이션이 부드러운가?
+- [ ] **모달**: 모달 외부 클릭 또는 ESC 키로 닫히는가?
+- [ ] **QR 코드**: QR 코드 토글이 즉시 반응하는가?
+- [ ] **QR 코드 다운로드**: 다운로드 버튼 클릭 시 즉시 다운로드되는가?
+
+### 14.5 Visual Design (시각적 디자인)
+- [ ] **일관성**: 색상, 폰트, 간격이 디자인 시스템과 일관되는가?
+- [ ] **계층 구조**: 정보의 중요도에 따라 시각적 계층이 명확한가?
+- [ ] **여백**: 요소 간 충분한 여백이 있어 답답하지 않은가?
+- [ ] **타이포그래피**: 폰트 크기와 행간이 가독성이 좋은가?
+- [ ] **아이콘**: 아이콘과 텍스트가 함께 사용되어 의미가 명확한가?
+- [ ] **상태 표시**: 예약 상태(확정/취소)가 색상과 텍스트로 명확히 구분되는가?
+
+### 14.6 Performance (성능)
+- [ ] **초기 로딩**: 페이지 초기 로딩이 3초 이내인가?
+- [ ] **인터랙션**: 버튼 클릭 후 반응이 즉각적인가?
+- [ ] **QR 코드 생성**: QR 코드 생성이 1초 이내에 완료되는가?
+- [ ] **프린트**: 프린트 레이아웃 렌더링이 즉시 완료되는가?
+- [ ] **이미지**: 이미지가 지연 로딩되는가?
+
+## 15. 기능 QA 체크리스트
+
+### 15.1 기능 테스트
 - [ ] 예약 ID로 직접 접근 시 인증 폼이 표시되는가?
 - [ ] 올바른 휴대폰 번호 + 비밀번호로 인증에 성공하는가?
 - [ ] 잘못된 인증 정보로 인증이 실패하는가?
@@ -1573,7 +1719,7 @@ staleTime: 60000
 - [ ] 예약 취소가 정상적으로 처리되는가?
 - [ ] 취소 후 상태가 업데이트되는가?
 
-### 13.2 보안 테스트
+### 15.2 보안 테스트
 - [ ] 토큰 없이 detail API 호출 시 401 에러가 반환되는가?
 - [ ] 잘못된 토큰으로 호출 시 401 에러가 반환되는가?
 - [ ] 다른 사용자의 예약에 접근 시도 시 차단되는가?
@@ -1602,46 +1748,52 @@ staleTime: 60000
 ### Phase 2: 프론트엔드 기본 구조 (2-3일)
 1. 🔲 Constants 확장 (`constants/index.ts`)
 2. 🔲 DTO 확장 (`lib/dto.ts`)
-3. 🔲 Access Token Utils 구현 (`lib/access-token.ts`)
-4. 🔲 QR Code Utils 구현 (`lib/qr-code.ts`)
-5. 🔲 Print Utils 구현 (`lib/print.ts`)
-6. 🔲 React Query Hooks 구현
+3. 🔲 Shared Utils 구현 (공통 모듈로 이동)
+   - `src/lib/auth/token-storage.ts` (Access Token 관리)
+   - `src/lib/utils/qr-code.ts` (QR 코드 생성)
+   - `src/lib/utils/print.ts` (프린트 유틸리티)
+4. 🔲 React Query Hooks 구현
    - `useBookingVerifyMutation.ts`
    - `useBookingDetailQuery.ts`
-7. 🔲 Container 컴포넌트 구현 (`booking-info-container.tsx`)
+   - `useCancelBookingMutation.ts` ⚠️ 신규 작성 필요
+5. 🔲 Container 컴포넌트 구현 (`booking-info-container.tsx`)
 
-### Phase 3: UI 컴포넌트 구현 (3-4일)
+### Phase 3: UI 컴포넌트 구현 (2-3일) - 컴포넌트 통합으로 간소화
 1. 🔲 BookingAuthForm 구현
-2. 🔲 BookingInfoSection 구현
-3. 🔲 BookingHeader, Cards (Concert, Seat, Booker, Payment) 구현
-4. 🔲 BookingActions 구현
-5. 🔲 QRCodeDisplay 구현
-6. 🔲 PrintLayout 구현
-7. 🔲 Loading Skeleton 구현
-8. 🔲 Page 컴포넌트 구현 (`app/booking/[bookingId]/page.tsx`)
+2. 🔲 BookingInfoSection 구현 (통합된 단일 컴포넌트)
+   - 예약 헤더, 콘서트/좌석/예매자/결제 정보 모두 포함
+   - QR 코드 조건부 렌더링
+   - 액션 버튼들 (QR, 프린트, 취소)
+3. 🔲 CancelConfirmationModal 구현 (또는 재사용)
+4. 🔲 Loading Skeleton 구현 (`booking-info-skeleton.tsx`)
+5. 🔲 Page 컴포넌트 구현 (`app/booking/[bookingId]/page.tsx`)
 
-### Phase 4: 스타일링 및 프린트 레이아웃 (1-2일)
+### Phase 4: 스타일링 및 프린트 레이아웃 (1일)
 1. 🔲 Tailwind CSS 스타일 적용
-2. 🔲 반응형 레이아웃 구현
-3. 🔲 프린트 전용 스타일 (@media print)
+2. 🔲 반응형 레이아웃 구현 (모바일, 태블릿, 데스크톱)
+3. 🔲 프린트 전용 스타일 (@media print) - BookingInfoSection 내부에 처리
 4. 🔲 애니메이션 및 전환 효과
 
-### Phase 5: QR 코드 및 보안 (1-2일)
-1. 🔲 qrcode.react 패키지 설치 및 설정
-2. 🔲 jsonwebtoken 패키지 설치 및 설정
-3. 🔲 JWT 시크릿 키 생성 및 환경 변수 설정
+### Phase 5: QR 코드 및 보안 (1일)
+1. 🔲 react-qr-code 패키지 설치
+2. 🔲 jsonwebtoken 패키지 설치
+3. 🔲 JWT 시크릿 키 생성 및 환경 변수 설정 (필수 검증 로직 포함)
 4. 🔲 QR 코드 다운로드 기능 구현
 5. 🔲 토큰 검증 로직 테스트
 
-### Phase 6: 테스트 및 QA (2-3일)
-1. 🔲 백엔드 단위 테스트 작성
+### Phase 6: 테스트 및 QA (3-4일)
+1. 🔲 백엔드 단위 테스트 작성 (Service Layer)
+   - verifyBookingAccess, getBookingDetailById, JWT 함수들
 2. 🔲 React Query Hook 테스트 작성
-3. 🔲 컴포넌트 통합 테스트 작성
+   - useBookingVerifyMutation, useBookingDetailQuery, useCancelBookingMutation
+3. 🔲 컴포넌트 테스트 작성
+   - BookingAuthForm, BookingInfoContainer, BookingInfoSection
 4. 🔲 보안 테스트 (토큰 검증, 접근 제어)
-5. 🔲 QA 체크리스트 검증
-6. 🔲 버그 수정 및 리팩토링
+5. 🔲 Presentation Layer QA 검증 (접근성, 반응형, UX)
+6. 🔲 기능 QA 체크리스트 검증
+7. 🔲 버그 수정 및 리팩토링
 
-**총 예상 기간**: 11-17일
+**총 예상 기간**: 9-14일 (컴포넌트 통합으로 2-3일 단축)
 
 ## 15. 참고 자료 및 문서
 
