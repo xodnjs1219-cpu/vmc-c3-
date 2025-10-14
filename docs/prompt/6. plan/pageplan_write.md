@@ -5,7 +5,7 @@
 반드시 다음 순서를 따라야한다.
 
 1. `/docs` 경로 하위에 직접 포함된 모든 md 파일을 읽는다.
-2. `/docs/pages` 경로 하위에 포함된, 해당 페이지와 관련된 모든 기능의 spec.md 문서를 읽는다.
+2. `/docs/usecases` 경로 하위에 포함된, 해당 페이지와 관련된 모든 기능의 spec.md 문서를 읽는다.
    1. 만약 `/docs/pages/pageName`에 `state_management.md` 가 존재한다면 참조하라
 3. 문서들의 내용을 통해 자세한 요구사항을 파악한다.
 4. 코드베이스에서 관련 파일들을 탐색하여 이미 구현된 기능, convention, guideline 등을 파악한다.
