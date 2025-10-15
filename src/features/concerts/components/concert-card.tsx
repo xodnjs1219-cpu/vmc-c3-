@@ -9,17 +9,17 @@ import { formatConcertPeriod } from "@/lib/utils/date";
 import { cn } from "@/lib/utils";
 import type { ConcertResponse } from "@/features/concerts/lib/dto";
 
-const CARD_CONTAINER_CLASS = "group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-800 bg-slate-950/70 transition hover:border-emerald-500/60 hover:bg-slate-900/70";
-const IMAGE_WRAPPER_CLASS = "relative h-48 w-full overflow-hidden";
-const IMAGE_CLASS = "object-cover transition duration-500 group-hover:scale-105";
-const HEADER_CLASS = "flex flex-col gap-2 p-5";
-const TITLE_CLASS = "line-clamp-2 text-lg font-semibold text-white";
-const DESCRIPTION_CLASS = "line-clamp-2 text-sm text-slate-300";
-const CONTENT_CLASS = "flex flex-col gap-3 px-5 pb-5";
-const META_ROW_CLASS = "flex items-center gap-2 text-sm text-slate-300";
-const ICON_CLASS = "h-4 w-4 text-emerald-300";
-const FOOTER_CLASS = "mt-auto flex items-center justify-end bg-slate-900/30 px-5 py-4";
-const LINK_CLASS = "inline-flex items-center gap-2 text-sm font-semibold text-emerald-300 transition hover:text-emerald-200";
+const CARD_CONTAINER_CLASS = "group flex h-full flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition hover:shadow-lg";
+const IMAGE_WRAPPER_CLASS = "relative h-56 w-full overflow-hidden";
+const IMAGE_CLASS = "object-cover transition duration-300 group-hover:scale-105";
+const HEADER_CLASS = "flex flex-col gap-2 p-4";
+const TITLE_CLASS = "line-clamp-2 text-lg font-bold text-gray-900";
+const DESCRIPTION_CLASS = "line-clamp-2 text-sm text-gray-600";
+const CONTENT_CLASS = "flex flex-col gap-2 px-4 pb-4";
+const META_ROW_CLASS = "flex items-center gap-2 text-sm text-gray-600";
+const ICON_CLASS = "h-4 w-4 text-indigo-600";
+const FOOTER_CLASS = "mt-auto border-t border-gray-100 bg-gray-50 px-4 py-3";
+const LINK_CLASS = "inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 transition hover:text-indigo-700";
 const LINK_LABEL = "자세히 보기";
 
 export type ConcertCardProps = {

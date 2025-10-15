@@ -16,13 +16,13 @@ import type { BookingDetail } from '@/features/bookings/types';
 import type { BookingLookupFormData } from '@/features/bookings/lib/validation';
 import { useToast } from '@/hooks/use-toast';
 
-const PAGE_CONTAINER_CLASS = 'min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900 text-white';
+const PAGE_CONTAINER_CLASS = 'min-h-screen bg-gray-50';
 const MAIN_CONTAINER_CLASS = 'container mx-auto max-w-5xl px-4 py-12';
 const HEADER_SECTION_CLASS = 'mb-8 space-y-3 text-center md:text-left';
-const HEADER_TITLE_CLASS = 'text-3xl font-bold tracking-tight';
-const HEADER_DESCRIPTION_CLASS = 'text-sm text-slate-400';
+const HEADER_TITLE_CLASS = 'text-3xl font-bold tracking-tight text-gray-900';
+const HEADER_DESCRIPTION_CLASS = 'text-sm text-gray-600';
 const RESULT_SECTION_CLASS = 'mt-10 space-y-4';
-const RESULT_TITLE_CLASS = 'text-xl font-semibold text-white';
+const RESULT_TITLE_CLASS = 'text-xl font-semibold text-gray-900';
 const RESULT_LIST_CLASS = 'space-y-5';
 const ERROR_ALERT_CLASS = 'rounded-lg border border-red-800/60 bg-red-950/40 px-4 py-3 text-sm text-red-300';
 const EMPTY_STATE_MESSAGE = '입력하신 정보와 일치하는 예매 내역이 없습니다.';

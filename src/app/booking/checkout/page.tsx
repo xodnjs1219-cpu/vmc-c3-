@@ -22,7 +22,7 @@ const EXPIRED_SELECTION_MESSAGE = '좌석 선택 시간이 만료되었습니다
 const MISMATCH_SELECTION_MESSAGE = '좌석 정보가 올바르지 않습니다. 다시 좌석을 선택해주세요.';
 const PAGE_TITLE = '예약자 정보 입력';
 const PAGE_DESCRIPTION = '선택하신 좌석 정보를 확인하고 예약자 정보를 입력해주세요.';
-const LAYOUT_BG_CLASS = 'min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900 text-white';
+const LAYOUT_BG_CLASS = 'min-h-screen bg-gray-50';
 const MAIN_CONTAINER_CLASS = 'container mx-auto max-w-6xl px-4 py-10';
 const GRID_LAYOUT_CLASS = 'grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]';
 const LOADING_MESSAGE = '좌석 정보를 확인하는 중입니다...';
@@ -122,7 +122,7 @@ export default function BookingCheckoutPage({ searchParams }: BookingCheckoutPag
       <div className={LAYOUT_BG_CLASS}>
         <PrimaryHeader />
         <main className={MAIN_CONTAINER_CLASS}>
-          <p className="text-center text-sm text-slate-300">{LOADING_MESSAGE}</p>
+          <p className="text-center text-sm text-gray-600">{LOADING_MESSAGE}</p>
         </main>
       </div>
     );
@@ -133,7 +133,7 @@ export default function BookingCheckoutPage({ searchParams }: BookingCheckoutPag
       <div className={LAYOUT_BG_CLASS}>
         <PrimaryHeader />
         <main className={MAIN_CONTAINER_CLASS}>
-          <p className="text-center text-sm text-slate-300">{BOOKING_ERROR_FALLBACK_MESSAGE}</p>
+          <p className="text-center text-sm text-gray-600">{BOOKING_ERROR_FALLBACK_MESSAGE}</p>
         </main>
       </div>
     );
@@ -157,8 +157,8 @@ export default function BookingCheckoutPage({ searchParams }: BookingCheckoutPag
       <PrimaryHeader />
       <main className={MAIN_CONTAINER_CLASS}>
         <header className="mb-8 space-y-2">
-          <h1 className="text-3xl font-bold text-white">{PAGE_TITLE}</h1>
-          <p className="text-sm text-slate-300">{PAGE_DESCRIPTION}</p>
+          <h1 className="text-3xl font-bold text-gray-900">{PAGE_TITLE}</h1>
+          <p className="text-sm text-gray-600">{PAGE_DESCRIPTION}</p>
         </header>
 
         <section className={GRID_LAYOUT_CLASS}>

@@ -79,24 +79,24 @@ export function SeatSelectionContainer({ title = DEFAULT_TITLE }: SeatSelectionC
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900 text-white">
+    <div className="min-h-screen bg-gray-50">
       <PrimaryHeader />
 
       <main className="container mx-auto max-w-6xl space-y-8 px-4 py-10">
         <header className="space-y-2">
-          <h1 className="text-2xl font-bold text-white">{title}</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
           {seatStatusQuery.isError && (
-            <p className="text-sm text-amber-300">{STATUS_ERROR_MESSAGE}</p>
+            <p className="text-sm text-amber-600">{STATUS_ERROR_MESSAGE}</p>
           )}
         </header>
 
         {state.error && (
-          <div className="flex items-start justify-between gap-4 rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
+          <div className="flex items-start justify-between gap-4 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
             <p className="flex-1">{state.error}</p>
             <button
               type="button"
               onClick={clearError}
-              className="text-xs font-semibold uppercase tracking-wide text-amber-200/80 hover:text-amber-100"
+              className="text-xs font-semibold uppercase tracking-wide text-amber-700 hover:text-amber-900"
             >
               닫기
             </button>

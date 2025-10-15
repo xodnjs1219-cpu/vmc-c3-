@@ -10,13 +10,13 @@ import {
 } from "@/features/concerts/constants";
 import { toDateInputValue, toIsoFromDateInput } from "@/lib/utils/date";
 
-const PANEL_CLASS = "grid gap-4 rounded-2xl border border-slate-800 bg-slate-950/60 p-5 md:grid-cols-4";
+const PANEL_CLASS = "grid gap-4 rounded-lg border border-gray-200 bg-white p-5 shadow-sm md:grid-cols-4";
 const FIELD_CLASS = "flex flex-col gap-2";
-const LABEL_CLASS = "text-sm font-medium text-slate-200";
-const SELECT_TRIGGER_CLASS = "w-full rounded-lg border border-slate-800 bg-slate-950/60 text-slate-100";
-const DATE_INPUT_CLASS = "rounded-lg border border-slate-800 bg-slate-950/60 text-slate-100";
-const RESET_BUTTON_VARIANT = "ghost" as const;
-const RESET_BUTTON_CLASS = "justify-self-end self-end rounded-lg border border-slate-800/60 bg-slate-900/40 px-3 text-sm text-slate-300 transition hover:border-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-200";
+const LABEL_CLASS = "text-sm font-medium text-gray-700";
+const SELECT_TRIGGER_CLASS = "w-full rounded-lg border border-gray-300 bg-white text-gray-900";
+const DATE_INPUT_CLASS = "rounded-lg border border-gray-300 bg-white text-gray-900";
+const RESET_BUTTON_VARIANT = "outline" as const;
+const RESET_BUTTON_CLASS = "justify-self-end self-end rounded-lg border border-gray-300 bg-white px-3 text-sm text-gray-700 transition hover:bg-gray-50";
 const GENRE_LABEL = "장르";
 const REGION_LABEL = "지역";
 const START_DATE_LABEL = "시작일";

@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button";
 import type { ConcertPagination } from "@/features/concerts/lib/dto";
 import { cn } from "@/lib/utils";
 
-const CONTAINER_CLASS = "flex flex-col gap-3 border-t border-slate-800 pt-6";
+const CONTAINER_CLASS = "flex flex-col gap-3 border-t border-gray-200 pt-6";
 const CONTROL_WRAPPER_CLASS = "flex items-center justify-between";
-const SUMMARY_CLASS = "text-sm text-slate-300";
+const SUMMARY_CLASS = "text-sm text-gray-600";
 const BUTTON_VARIANT = "outline" as const;
-const BUTTON_CLASS = "border-slate-700 text-slate-200 hover:border-emerald-400 hover:bg-emerald-500/10";
+const BUTTON_CLASS = "border-gray-300 text-gray-700 hover:bg-gray-50";
 const PREV_LABEL = "이전 페이지";
 const NEXT_LABEL = "다음 페이지";
 const PAGE_SUMMARY_TEMPLATE = (current: number, total: number) => `페이지 ${current} / ${total}`;

@@ -3,12 +3,12 @@
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const CONTAINER_CLASS = 'space-y-4 rounded-lg border border-slate-800 bg-slate-900/40 p-6';
+const CONTAINER_CLASS = 'space-y-4 rounded-lg border border-gray-200 bg-gray-50 p-6';
 const ROW_CLASS = 'flex items-center justify-between';
-const LABEL_CLASS = 'text-sm text-slate-400';
-const VALUE_CLASS = 'text-lg font-semibold text-white';
-const VALIDATION_CLASS = 'text-sm text-amber-400';
-const CTA_BUTTON_CLASS = 'w-full gap-2 bg-emerald-600 py-6 text-base font-semibold hover:bg-emerald-500 disabled:bg-slate-700 disabled:text-slate-500';
+const LABEL_CLASS = 'text-sm text-gray-600';
+const VALUE_CLASS = 'text-lg font-semibold text-gray-900';
+const VALIDATION_CLASS = 'text-sm text-amber-600';
+const CTA_BUTTON_CLASS = 'w-full gap-2 bg-indigo-600 py-6 text-base font-semibold hover:bg-indigo-700 disabled:bg-gray-300 disabled:text-gray-500';
 const SELECTED_LABEL = '선택한 인원';
 const CTA_LABEL = '좌석 선택하기';
 const COUNT_SUFFIX = '매';

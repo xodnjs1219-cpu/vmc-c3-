@@ -3,9 +3,9 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CONCERT_SORT_OPTIONS } from "@/features/concerts/constants";
 
-const CONTAINER_CLASS = "flex w-full flex-col gap-2";
-const LABEL_CLASS = "text-sm font-medium text-slate-200";
-const TRIGGER_CLASS = "w-full rounded-lg border border-slate-800 bg-slate-950/60 text-slate-100";
+const CONTAINER_CLASS = "flex w-full flex-col gap-2 md:w-auto";
+const LABEL_CLASS = "text-sm font-medium text-gray-700";
+const TRIGGER_CLASS = "w-full rounded-lg border border-gray-300 bg-white text-gray-900 md:w-48";
 const PLACEHOLDER_LABEL = "정렬 기준";
 const LABEL_TEXT = "정렬";
 

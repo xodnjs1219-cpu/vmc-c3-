@@ -27,11 +27,11 @@ export function SeatLayout({
   onRelease,
 }: SeatLayoutProps) {
   return (
-    <section className="space-y-6 rounded-lg border border-slate-800 bg-slate-900/60 p-6 shadow-lg shadow-slate-950/40">
+    <section className="space-y-6 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div>
-          <h2 className="text-xl font-semibold text-white">{TITLE}</h2>
-          <p className="text-sm text-slate-400">{DESCRIPTION}</p>
+          <h2 className="text-xl font-semibold text-gray-900">{TITLE}</h2>
+          <p className="text-sm text-gray-600">{DESCRIPTION}</p>
         </div>
         <SeatLegend />
       </div>

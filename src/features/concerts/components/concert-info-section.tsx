@@ -5,13 +5,13 @@ import { Calendar, MapPin } from 'lucide-react';
 import { formatConcertPeriod } from '@/lib/utils/date';
 import type { ConcertDetailResponse } from '@/features/concerts/lib/dto';
 
-const PERIOD_ICON_CLASS = 'h-5 w-5 text-emerald-400';
-const VENUE_ICON_CLASS = 'h-5 w-5 text-emerald-400';
-const TITLE_CLASS = 'text-3xl font-bold text-white md:text-4xl';
-const DESCRIPTION_CLASS = 'whitespace-pre-wrap leading-relaxed text-slate-300';
-const INFO_ROW_CLASS = 'flex items-center gap-2 text-slate-300';
+const PERIOD_ICON_CLASS = 'h-5 w-5 text-indigo-600';
+const VENUE_ICON_CLASS = 'h-5 w-5 text-indigo-600';
+const TITLE_CLASS = 'text-3xl font-bold text-gray-900 md:text-4xl';
+const DESCRIPTION_CLASS = 'whitespace-pre-wrap leading-relaxed text-gray-700';
+const INFO_ROW_CLASS = 'flex items-center gap-2 text-gray-700';
 const SECTION_CLASS = 'space-y-6';
-const IMAGE_WRAPPER_CLASS = 'relative aspect-[16/9] w-full overflow-hidden rounded-lg';
+const IMAGE_WRAPPER_CLASS = 'relative aspect-[16/9] w-full overflow-hidden rounded-xl border border-gray-200 shadow-md';
 const IMAGE_CLASS = 'object-cover';
 
 export type ConcertInfoSectionProps = {

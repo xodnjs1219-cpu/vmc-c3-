@@ -4,27 +4,27 @@ import Link from "next/link";
 import { ArrowRight, Ticket } from "lucide-react";
 import { APP_NAME, APP_TAGLINE, ROUTES } from "@/constants/app";
 
-const HEADER_CONTAINER_CLASS = "flex flex-col gap-4 border-b border-slate-800 bg-slate-950/80 px-6 py-6 md:flex-row md:items-center md:justify-between";
-const BRAND_CONTAINER_CLASS = "flex flex-col gap-2";
-const BRAND_TITLE_CLASS = "text-2xl font-semibold tracking-tight text-white";
-const BRAND_TAGLINE_CLASS = "text-sm text-slate-300";
-const ACTION_BUTTON_CLASS = "inline-flex items-center gap-2 rounded-md border border-emerald-500/60 px-4 py-2 text-sm font-medium text-emerald-200 transition hover:border-emerald-400 hover:bg-emerald-500/10";
-const NAV_LINK_CLASS = "inline-flex items-center gap-2 text-sm font-medium text-slate-200 transition hover:text-white";
+const HEADER_CONTAINER_CLASS = "sticky top-0 z-50 flex flex-col gap-4 border-b border-gray-200 bg-white/95 px-6 py-4 shadow-sm backdrop-blur-sm md:flex-row md:items-center md:justify-between";
+const BRAND_CONTAINER_CLASS = "flex items-center gap-3";
+const BRAND_TITLE_CLASS = "text-xl font-bold tracking-tight text-gray-900";
+const BRAND_TAGLINE_CLASS = "hidden text-sm text-gray-600 md:block";
+const ACTION_BUTTON_CLASS = "inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-indigo-700";
+const NAV_LINK_CLASS = "inline-flex items-center gap-2 text-sm font-medium text-gray-700 transition hover:text-gray-900";
 const NAV_CONTAINER_CLASS = "flex flex-wrap items-center gap-4";
 const HOME_LINK_LABEL = "홈";
 const HOME_LINK_SR_LABEL = "홈으로 이동";
-const LOOKUP_BUTTON_LABEL = "예약 조회하기";
+const LOOKUP_BUTTON_LABEL = "예약 조회";
 const NAV_ARIA_LABEL = "주요 메뉴";
 
 export function PrimaryHeader() {
   return (
     <header className={HEADER_CONTAINER_CLASS}>
       <div className={BRAND_CONTAINER_CLASS}>
-        <Link href={ROUTES.home} className={NAV_LINK_CLASS}>
-          <Ticket className="h-5 w-5" />
-          <span className="sr-only">{HOME_LINK_SR_LABEL}</span>
+        <Link href={ROUTES.home} className="flex items-center gap-2">
+          <Ticket className="h-6 w-6 text-indigo-600" />
+          <h1 className={BRAND_TITLE_CLASS}>{APP_NAME}</h1>
         </Link>
-        <h1 className={BRAND_TITLE_CLASS}>{APP_NAME}</h1>
+        <span className="hidden text-gray-300 md:block">|</span>
         <p className={BRAND_TAGLINE_CLASS}>{APP_TAGLINE}</p>
       </div>
 

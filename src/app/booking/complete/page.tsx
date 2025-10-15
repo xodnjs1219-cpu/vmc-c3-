@@ -110,7 +110,7 @@ export default function BookingCompletePage({ searchParams }: BookingCompletePag
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900 text-white">
+    <div className="min-h-screen bg-gray-50">
       <PrimaryHeader />
 
       <main className="container mx-auto max-w-6xl px-4 py-10">

@@ -4,17 +4,17 @@ import { SEAT_GRADE_LABELS } from '@/features/concerts/constants';
 import type { SeatAvailability } from '@/features/concerts/lib/dto';
 
 const SECTION_CLASS = 'space-y-4';
-const TABLE_WRAPPER_CLASS = 'overflow-hidden rounded-lg border border-slate-800';
+const TABLE_WRAPPER_CLASS = 'overflow-hidden rounded-lg border border-gray-200 shadow-sm';
 const TABLE_CLASS = 'w-full';
-const HEADER_CELL_CLASS = 'px-4 py-3 text-left text-sm font-semibold text-slate-200';
-const HEADER_CELL_RIGHT_CLASS = 'px-4 py-3 text-right text-sm font-semibold text-slate-200';
-const HEADER_ROW_CLASS = 'bg-slate-900/60';
-const BODY_CLASS = 'divide-y divide-slate-800';
-const ROW_CLASS = 'bg-slate-950/60 transition hover:bg-slate-900/40';
-const CELL_GRADE_CLASS = 'px-4 py-3 text-sm font-medium text-white';
-const CELL_PRICE_CLASS = 'px-4 py-3 text-right text-sm text-slate-300';
-const CELL_AVAILABLE_CLASS = 'px-4 py-3 text-right text-sm text-emerald-400';
-const SECTION_TITLE_CLASS = 'text-xl font-semibold text-white';
+const HEADER_CELL_CLASS = 'px-4 py-3 text-left text-sm font-semibold text-gray-700';
+const HEADER_CELL_RIGHT_CLASS = 'px-4 py-3 text-right text-sm font-semibold text-gray-700';
+const HEADER_ROW_CLASS = 'bg-gray-50';
+const BODY_CLASS = 'divide-y divide-gray-200';
+const ROW_CLASS = 'bg-white transition hover:bg-gray-50';
+const CELL_GRADE_CLASS = 'px-4 py-3 text-sm font-medium text-gray-900';
+const CELL_PRICE_CLASS = 'px-4 py-3 text-right text-sm text-gray-700';
+const CELL_AVAILABLE_CLASS = 'px-4 py-3 text-right text-sm text-indigo-600 font-medium';
+const SECTION_TITLE_CLASS = 'text-xl font-semibold text-gray-900';
 const PRICE_SUFFIX = '원';
 const AVAILABLE_SUFFIX = '석';
 

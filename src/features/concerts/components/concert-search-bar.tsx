@@ -5,11 +5,11 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-const FORM_CLASS = "flex w-full items-center gap-3 rounded-lg border border-slate-800 bg-slate-900/80 p-4 shadow-sm";
+const FORM_CLASS = "flex w-full items-center gap-3 rounded-lg border border-gray-300 bg-white p-3 shadow-sm";
 const INPUT_WRAPPER_CLASS = "flex w-full items-center gap-3";
-const SEARCH_ICON_CLASS = "h-5 w-5 text-emerald-300";
-const SUBMIT_BUTTON_VARIANT = "outline" as const;
-const SUBMIT_BUTTON_CLASS = "border-emerald-500/60 text-emerald-200 hover:border-emerald-400 hover:bg-emerald-500/10";
+const SEARCH_ICON_CLASS = "h-5 w-5 text-gray-400";
+const SUBMIT_BUTTON_VARIANT = "default" as const;
+const SUBMIT_BUTTON_CLASS = "bg-indigo-600 text-white hover:bg-indigo-700";
 const SEARCH_PLACEHOLDER = "콘서트 제목, 설명 또는 공연장을 입력하세요";
 const SEARCH_ARIA_LABEL = "콘서트 검색";
 const SUBMIT_BUTTON_TEXT = "검색";

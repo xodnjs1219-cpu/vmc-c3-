@@ -81,7 +81,7 @@ export function ConcertDetailContainer({ concertId }: ConcertDetailContainerProp
 
     if (isNotFound) {
       return (
-        <div className="min-h-screen bg-slate-950">
+        <div className="min-h-screen bg-gray-50">
           <PrimaryHeader />
           <main className="container mx-auto max-w-5xl px-4 py-12">
             <ConcertEmptyState title={NOT_FOUND_TITLE} description={NOT_FOUND_DESCRIPTION} />
@@ -91,7 +91,7 @@ export function ConcertDetailContainer({ concertId }: ConcertDetailContainerProp
     }
 
     return (
-      <div className="min-h-screen bg-slate-950">
+      <div className="min-h-screen bg-gray-50">
         <PrimaryHeader />
         <main className="container mx-auto max-w-5xl px-4 py-12">
           <ConcertErrorState
@@ -105,7 +105,7 @@ export function ConcertDetailContainer({ concertId }: ConcertDetailContainerProp
 
   if (!detailQuery.data) {
     return (
-      <div className="min-h-screen bg-slate-950">
+      <div className="min-h-screen bg-gray-50">
         <PrimaryHeader />
         <main className="container mx-auto max-w-5xl px-4 py-12">
           <ConcertEmptyState title={GENERIC_EMPTY_TITLE} description={GENERIC_EMPTY_DESCRIPTION} />
@@ -118,14 +118,14 @@ export function ConcertDetailContainer({ concertId }: ConcertDetailContainerProp
   const isSoldOut = seatQuery.data?.totalAvailable === 0;
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-gray-50">
       <PrimaryHeader />
 
       <main className="container mx-auto max-w-5xl space-y-10 px-4 py-10">
         <ConcertInfoSection concert={concert} />
 
         {seatQuery.isLoading ? (
-          <div className="rounded-lg border border-slate-800 bg-slate-900/40 p-6 text-center text-sm text-slate-300">
+          <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-sm text-gray-600 shadow-sm">
             {LOADING_AVAILABILITY_LABEL}
           </div>
         ) : seatQuery.isError ? (
@@ -139,10 +139,10 @@ export function ConcertDetailContainer({ concertId }: ConcertDetailContainerProp
           <div className="space-y-8">
             <TicketGradeTable grades={seatQuery.data?.grades ?? []} />
 
-            <div className="space-y-6 rounded-lg border border-slate-800 bg-slate-900/40 p-6">
+            <div className="space-y-6 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
               <div className="space-y-2">
-                <h3 className="text-lg font-semibold text-white">{COUNTER_TITLE}</h3>
-                <p className="text-sm text-slate-400">
+                <h3 className="text-lg font-semibold text-gray-900">{COUNTER_TITLE}</h3>
+                <p className="text-sm text-gray-600">
                   {COUNTER_DESCRIPTION_PREFIX}
                   {maxTicketsPerBooking}
                   {COUNTER_DESCRIPTION_SUFFIX}
